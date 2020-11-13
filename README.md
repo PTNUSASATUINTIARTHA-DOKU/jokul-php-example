@@ -8,7 +8,13 @@ PHP version v5 or greater<br />
 
 ## Running Application
 Copy and Paste all resource to your localhost server
-and run . Example :
+
+```
+composer install
+```
+after installing finished open your demo. example server run at 
+            localhost:8080
+                                                                
 ```
 http://localhost:8080/demo/php-library/index.php
 ```

@@ -1,0 +1,16 @@
+{
+    "name": "jokul/php-demo",
+    "description": "Demo Apps for testing Jokul PHP Library",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "DOKU",
+            "email": "dokudevex@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "doku/jokul-php-library": "2.0.0"
+    }
+}
