@@ -1,25 +1,22 @@
 <?php
 require_once "vendor/autoload.php";
 
-$headers = getallheaders();
-$raw_notification = json_decode(file_get_contents('php://input'), true);
+// Mapping the notification received from Jokul
+$notifyHeaders = getallheaders();
+$notifyBody = json_decode(file_get_contents('php://input'), true); // You can use to parse the value from the notification body
+$targetPath = '/notify.php'; // Put this value with your payment notification path
+$secretKey = 'SK-OLXIhgLepNXegTyy26KB'; // Put this value with your Secret Key
 
-//notify
-$dokuNotify = new DOKU\Service\Notification();
-$signature = \DOKU\Common\Utils::generateSignature($headers, file_get_contents('php://input'), 'SK-hCJ42G28TA0MKG9LE2E_1');
-if ($signature == $headers['Signature']) {
-    $response = json_encode($dokuNotify->getNotification($raw_notification));
-    //manage the response as you need. ex : 
-    //using amount = echo $response['order']['amount'];
-    echo $response;
+// Prepare Signature to verify the notification authenticity
+$signature = \DOKU\Common\Utils::generateSignature($notifyHeaders, $targetPath, file_get_contents('php://input'), $secretKey);
+
+// Verify the notification authenticity
+if ($signature == $notifyHeaders['Signature']) {
+    http_response_code(200); // Return 200 Success to Jokul if the Signature is match
+    // TODO update transaction status on your end to 'SUCCESS'
 } else {
-    //return 400 to DOKU
-    http_response_code(400);
-    $response = json_encode($dokuNotify->getNotification($raw_notification));
-    echo $response;
+    http_response_code(401); // Return 401 Unauthorized to Jokul if the Signature is not match
+    // TODO Do Not update transaction status on your end yet
 }
-error_log("====== Notify result From Doku =========", 3, "/var/tmp/my-errors.log");
-error_log(json_encode($response, JSON_PRETTY_PRINT), 3, "/var/tmp/my-errors.log");
-
 
 header('Content-type:application/json;charset=utf-8');

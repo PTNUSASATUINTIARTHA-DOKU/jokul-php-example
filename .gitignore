@@ -26,3 +26,7 @@
 
 ### Local Property ####
 src/main/resources/application-local.properties
+
+.DS_Store
+composer.lock
+vendor/
