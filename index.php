@@ -8,18 +8,18 @@
     <meta name="description"
           content="Demo application to show you the process of endTo-end payment using Jokul Checkout">
 
-    <title>Jokul Checkout Demo Application</title>
+    <title>Jokul Library Example Project</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/png"
-          href="https://cdn-dev.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/img/favicon.png"/>
+          href="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/img/favicon.png"/>
 
     <!-- Bootstrap -->
     <!--    <link rel="stylesheet"-->
-    <!--          href="https://cdn-dev.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/stylesheet/css/bootstrap.css">-->
+    <!--          href="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/stylesheet/css/bootstrap.css">-->
     <!-- Custom Styling -->
     <link rel="stylesheet"
-          href="https://cdn-dev.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/stylesheet/css/main.css">
+          href="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/stylesheet/css/main.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
           integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
@@ -28,10 +28,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
 
-    <script src="https://cdn-dev.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/js/jquery-3.3.1.min.js"></script>
     <!-- Popper and Bootstrap JS -->
-    <script src="https://cdn-dev.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/js/popper.min.js"></script>
-    <script src="https://cdn-dev.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/js/bootstrap.min.js"></script>
+    <script src="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/js/popper.min.js"></script>
+    <script src="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/js/bootstrap.min.js"></script>
 
 
 </head>
@@ -41,8 +41,8 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <img src="https://cdn-dev.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/img/doku1.png"
-                     width="20" height="20" class="mr-2"><h5 class="d-inline font-weight-normal">DOKU Merchandise</h5>
+                <img src="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/img/doku1.png"
+                     width="20" height="20" class="mr-2"  alt="DOKU Logo"><h5 class="d-inline font-weight-normal">Jokul Demo Store</h5>
             </div>
         </div>
     </div>
@@ -59,7 +59,7 @@
                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                     <div class="d-flex">
                         <div class="mr-1">
-                            <img src="https://cdn-dev.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/img/doku1.png"
+                            <img src="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/img/doku1.png"
                                  alt="DOKU Plate" class="img-fluid" width="75" height="75">
                         </div>
 
@@ -170,9 +170,10 @@
                                     <div class="col-md-12 mb-3">
                                         <label>Payment Channel</label>
                                         <select class="form-control" id="channel" name="channel" required>
-                                            <option value="dokuva" selected>DOKU VA</option>
-                                            <option value="mandiri" selected>Mandiri VA</option>
-                                            <option value="mandiri-syariah">Mandiri Syariah VA</option>
+                                            <option value="bcava" selected>BCA VA</option>
+                                            <option value="bankmandiriva">Bank Mandiri VA</option>
+                                            <option value="bsiva">Bank Syariah Indonesia VA</option>
+                                            <option value="dokuva">DOKU VA</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             Please select a valid country.
@@ -212,7 +213,7 @@
     <div class="row text-center">
         <div class="col-12">
             <img class="mb-2"
-                 src="https://cdn-dev.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/img/doku-logo1.svg" alt=""
+                 src="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/img/doku-logo1.svg" alt=""
                  width="24" height="24">
             <small class="d-inline ml-1 mb-3 text-muted">&copy; 2020</small>
         </div>
@@ -241,7 +242,7 @@
                                 <div class="mb-3">
                                     <label>Client ID</label>
                                     <input type="text" class="form-control dk-text-input" id="clientId" name="clientId"
-                                           placeholder="MCH-0001-2768422848330" value="MCH-0001-2768422848330"
+                                           placeholder="MCH-0035-1213674564873" value="MCH-0035-1213674564873"
                                            required>
                                     <div class="invalid-feedback">
                                         Client ID is required.
@@ -249,34 +250,13 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label>Shared Key</label>
+                                    <label>Secret Key</label>
                                     <input type="text" class="form-control dk-text-input" id="sharedKey"
                                            name="sharedKey"
-                                           placeholder="SK-hCJ42G28TA0MKG9LE2E_1" value="SK-hCJ42G28TA0MKG9LE2E_1"
+                                           placeholder="SK-OLXIhgLepNXegTyy26KB" value="SK-OLXIhgLepNXegTyy26KB"
                                            required>
                                     <div class="invalid-feedback">
-                                        Shared Key is required.
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="address">Merchant Name</label>
-                                    <input type="text" class="form-control dk-text-input" name="merchantName"
-                                           placeholder="Toko Susu" value="Toko Susu" required>
-                                    <div class="invalid-feedback">
-                                        Merchant Name is required.
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="country">Environment</label>
-                                    <select class="form-control" id="environment" name="environment" required>
-                                        <option value="sit" selected>SIT</option>
-                                        <option value="sandbox">Sandbox</option>
-                                        <option value="production">Production</option>
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Environment is required.
+                                        Secret Key is required.
                                     </div>
                                 </div>
 
@@ -392,13 +372,12 @@
         indexed_array['province'] = $("#province option:selected").val();
         indexed_array['channel'] = $("#channel option:selected").val();
         indexed_array['postalCode'] = $("#postalCode").val();
-        indexed_array['environment'] = $("#environment option:selected").val();
 
         $.ajax({
             type: "POST",
             dataType: "JSON",
             data: JSON.stringify(indexed_array),
-            url: "/demo/php-library/processing.php",
+            url: "processing.php",
             contentType: "application/json",
             success: function (result) {
 
@@ -408,7 +387,7 @@
                     confirmButtonText: 'Close Instruction',
                     html:
                         '<h4>Your VA Number : ' + result.virtual_account_info.virtual_account_number + '</h4> ' +
-                        '<iframe width="100%" height="700" src="'+result.virtual_account_info.how_to_pay_page+'" frameborder="0"></iframe>',
+                        '<h5><a target="_blank" href="'+result.virtual_account_info.how_to_pay_page+'">Click here to see payment instructions</a></h5>',
                     width: 1500,
                 });
             },

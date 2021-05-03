@@ -9,7 +9,7 @@ $params = array(
     'customerEmail' => $arr["email"],
     'customerName' => $arr["customerName"],
     'amount' => $arr["amount"],
-    'invoiceNumber' => random_strings(20),
+    'invoiceNumber' => random_strings(20), // Sample only. Change the invoice number with your desired format
     'expiryTime' => $arr["expiredTime"],
     'info1' => $arr["info1"],
     'info2' => $arr["info2"],
@@ -19,18 +19,21 @@ $params = array(
 
 $dokuClient = new DOKU\Client;
 
-// setup Config
+// Setup Config
 $dokuClient->setClientID($arr["clientId"]);
 $dokuClient->setSharedKey($arr["sharedKey"]);
-$dokuClient->isProduction(false);
+$dokuClient->isProduction(false); // Sandbox environment. For example project only.
 
-//GenerateVa
+// Generate VA based on channel chosen
 if ($arr["channel"] == "dokuva") {
     $obj_response = $dokuClient->generateDokuVa($params);
-} else if ($arr["channel"] == "mandiri") {
+} else if ($arr["channel"] == "bankmandiriva") {
     $obj_response = $dokuClient->generateMandiriVa($params);
-} else if ($arr["channel"] == "mandiri-syariah") {}
-
+} else if ($arr["channel"] == "bcava") {
+    $obj_response = $dokuClient->generateBcaVa($params);
+} else if ($arr["channel"] == "bsiva") {
+    $obj_response = $dokuClient->generateBsiVa($params);
+}
 
 if (isset($obj_response) && !isset($obj_response['error'])) {
     echo json_encode($obj_response);
@@ -39,7 +42,6 @@ if (isset($obj_response) && !isset($obj_response['error'])) {
     http_response_code(404);
     die;
 }
-
 
 function random_strings($length_of_string)
 {
