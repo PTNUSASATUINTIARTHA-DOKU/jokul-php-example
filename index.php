@@ -5,35 +5,40 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description"
-          content="Demo application to show you the process of endTo-end payment using Jokul Checkout">
+    <meta name="description"content="Demo application to show you the process of endTo-end payment using Jokul Checkout">
 
     <title>Jokul Library Example Project</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/png"
-          href="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/img/favicon.png"/>
+    <link rel="shortcut icon" type="image/png"href="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/img/favicon.png"/>
 
     <!-- Bootstrap -->
     <!--    <link rel="stylesheet"-->
     <!--          href="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/stylesheet/css/bootstrap.css">-->
     <!-- Custom Styling -->
-    <link rel="stylesheet"
-          href="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/stylesheet/css/main.css">
+    <link rel="stylesheet" href="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/stylesheet/css/main.css">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-    <script type="text/javascript">
-    </script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-
 
     <script src="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/js/jquery-3.3.1.min.js"></script>
     <!-- Popper and Bootstrap JS -->
     <script src="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/js/popper.min.js"></script>
     <script src="https://cdn-doku.oss-ap-southeast-5.aliyuncs.com/doku-ui-framework/doku/js/bootstrap.min.js"></script>
 
-
+    <style>
+        .loader{
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            opacity: 0.7;
+            height: 100%;
+            z-index: 9999;
+            background: url('//upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Phi_fenomeni.gif/50px-Phi_fenomeni.gif') 
+                        50% 50% no-repeat rgb(249,249,249);
+        }
+    </style>
 </head>
 
 <body>
@@ -174,6 +179,11 @@
                                             <option value="bankmandiriva">Bank Mandiri VA</option>
                                             <option value="bsiva">Bank Syariah Indonesia VA</option>
                                             <option value="dokuva">DOKU VA</option>
+                                            <option value="briva">BRI VA</option>
+                                            <option value="creditcard">Credit Card</option>
+                                            <option value="shopeepay">ShopeePay</option>
+                                            <option value="ovo">OVO</option>
+                                            <option value="dw">DOKU Wallet</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             Please select a valid country.
@@ -324,9 +334,17 @@
         </div>
     </div>
 </div>
+<div id="loading" class="loader"></div>
+<div id="dialog" title="Basic dialog">
+  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the &apos;x&apos; icon.</p>
+</div>
 </body>
 
 <script>
+    $(document).ready(function(){
+        $("#loading").hide();
+    })
+
     $("#formConfig").submit(function (e) {
         $('#configuration').modal('hide');
         Swal.fire({
@@ -340,8 +358,15 @@
         return false;
     });
 
+    function randomString(length, chars) {
+        var result = '';
+        for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+        return result;
+    }
+
 
     $("#formRequestData").submit(function (e) {
+        $("#loading").show();
         let unindexed_array_config = $('#formConfig').serializeArray();
         let unindexed_array_payment_request = $('#formRequestData').serializeArray();
         let indexed_array = {};
@@ -353,7 +378,6 @@
         $.map(unindexed_array_payment_request, function (n, i) {
             indexed_array[n['name']] = n['value'];
         });
-
 
         let reusableStatusVal = $("#vaReusable option:selected").val();
         let reusableStatus = false;
@@ -372,7 +396,10 @@
         indexed_array['province'] = $("#province option:selected").val();
         indexed_array['channel'] = $("#channel option:selected").val();
         indexed_array['postalCode'] = $("#postalCode").val();
+        var invoiceNumber = randomString(20, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        indexed_array['invoiceNumber'] = invoiceNumber;
 
+        $channel = indexed_array['channel'];
         $.ajax({
             type: "POST",
             dataType: "JSON",
@@ -380,25 +407,85 @@
             url: "processing.php",
             contentType: "application/json",
             success: function (result) {
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Order Success',
-                    confirmButtonText: 'Close Instruction',
-                    html:
-                        '<h4>Your VA Number : ' + result.virtual_account_info.virtual_account_number + '</h4> ' +
-                        '<h5><a target="_blank" href="'+result.virtual_account_info.how_to_pay_page+'">Click here to see payment instructions</a></h5>',
-                    width: 1500,
-                });
+                $("#loading").hide();
+                if ($channel == 'dokuva' || $channel == 'bankmandiriva' || $channel == 'bcava' || $channel == 'bsiva' || $channel == 'briva') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Order Success',
+                        confirmButtonText: 'Close Instruction',
+                        html:
+                            '<h4>Your VA Number : ' + result.virtual_account_info.virtual_account_number + '</h4> ' +
+                            '<h5><a target="_blank" href="'+result.virtual_account_info.how_to_pay_page+'">Click here to see payment instructions</a></h5>',
+                        width: 1500,
+                    });
+                } else if ($channel == 'creditcard' ) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Order Success',
+                        confirmButtonText: 'Close Instruction',
+                        html:
+                            '<h4>Your Invoice Number : ' + result.order.invoice_number + '</h4> ' +
+                            '<iframe width="100%" height="700" src="'+result.credit_card_payment_page.url+'" frameborder="0"></iframe>',
+                        width: 1500,
+                    });
+                } else if ($channel == 'shopeepay') {
+                    window.open(result.shopeepay_payment.redirect_url_http, '_blank');
+                } else if ($channel == 'dw') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Order Success',
+                        confirmButtonText: 'Close Instruction',
+                        html:
+                            '<h4>Your Invoice Number : ' + result.order.invoice_number + '</h4> ' +
+                            '<iframe width="100%" height="700" src="'+result.doku_wallet_payment_page.url+'" frameborder="0"></iframe>',
+                        width: 1500,
+                    });
+                } else if ($channel == 'ovo') {
+                    if (result.ovo_payment.status == "SUCCESS") {
+                        $status = 'success'
+                        $statusTitle = 'Success'
+                    } else {
+                        $status = 'error'
+                        $statusTitle = 'Failed'
+                    }
+                    Swal.fire({
+                        icon: $status,
+                        title: 'Order '.$statusTitle,
+                        confirmButtonText: 'Close Instruction',
+                        html:
+                            '<h4>Your Invoice Number : ' + result.order.invoice_number + '</h4> ' +
+                            '<h6>Your Amount         : ' + result.order.amount + '</h4> ' +
+                            '<h6>Your OVO ID         : ' + result.ovo_info.ovo_id + '</h4> ' +
+                            '<h6>Your OVO NAME       : ' + result.ovo_info.ovo_account_name + '</h4> ' +
+                            '<h6>Your OVO DATE       : ' + result.ovo_payment.date + '</h4> ' +
+                            '<h6>Your STATUS PAYMENT : ' + result.ovo_payment.status + '</h4>',
+                        width: 1500,
+                    });
+                }
             },
             error: function(xhr, textStatus, error){
+                $("#loading").hide();
                 Swal.fire({
                     icon: 'error',
                     title: 'Order Failed',
                     confirmButtonText: 'Close',
                 })
+            },
+            beforeSend: function() {
+                if ($channel == 'ovo') {
+                    $("#loading").hide();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Order Pending',
+                        confirmButtonText: 'Close Instruction',
+                        html:
+                            '<h4>please make payment to the following account</h4> ' +
+                            '<h4>Your Invoice Number : ' + invoiceNumber + '</h4> ' +
+                            '<h6>Your Amount         : ' + indexed_array['amount'] + '</h4> ',
+                        width: 1500,
+                    });
+                }
             }
-
         });
         e.preventDefault();
         return false;
